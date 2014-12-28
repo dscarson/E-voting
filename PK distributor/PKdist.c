@@ -8,7 +8,7 @@
 #include <string.h>
 #include <sys/types.h>
  
-int main(void)
+int main(int argc,char **argv)
 {
   int listenfd = 0,connfd = 0;
   struct sockaddr_in serv_addr;
@@ -25,7 +25,7 @@ int main(void)
   memset(sendBuff, '0', sizeof(sendBuff));
   serv_addr.sin_family = AF_INET;    
   serv_addr.sin_addr.s_addr = htonl(INADDR_ANY); 
-  serv_addr.sin_port = htons(5011);
+  serv_addr.sin_port = htons(atoi(argv[1]));
    
   bind(listenfd, (struct sockaddr*)&serv_addr,sizeof(serv_addr));
 
