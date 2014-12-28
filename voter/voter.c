@@ -29,7 +29,12 @@ int main()
 	char name[33]={0};
 	char email[33]={0};
 	unsigned int voterID;
+	unsigned int authID=0;
+	unsigned int counterID=0xffffffff;
 	int port_t;
+	char x;
+	unsigned int cand_choice;
+	unsigned long long RN;
 	int i,status;
 	fgets(registrar,30,ip);
 	fgets(PKdist,30,ip);
@@ -61,28 +66,27 @@ int main()
 	FILE *pub=fopen("pub_key","rb");
 	fread(_pub,16,1,pub);
 	memcpy(sendBuff+32+32+1,_pub,16);
-	fwrite(sendBuff,32+32+1+16,1,stdout);
+//	fwrite(sendBuff,32+32+1+16,1,stdout);
 	write(sockfd,sendBuff,32+32+16+1);
 	
 	n=read(sockfd,readBuff,1);
 	if(readBuff[0]==0)
 		{
 		read(sockfd,&voterID,4);
-		printf("\n%d\nid\n",voterID);
+		printf("you are given %08X id\n",voterID);
 		}
 	else
 		{
 		read(sockfd,readBuff,sizeof(readBuff));
 		printf("%s",readBuff+1);
+		return 1;
 		}
-	printf("%d\n",sockfd);
 	close(sockfd);
 ///// reading candidate list
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
-	printf("%d\n",sockfd);
 	sendBuff[0]=1;
-	printf("w%d\n",write(sockfd,sendBuff,1));
+	write(sockfd,sendBuff,1);
 	read(sockfd,readBuff,1);
 	if(readBuff[0]==1)
 		{
@@ -97,5 +101,81 @@ int main()
 		read(sockfd,readBuff,sizeof(readBuff));
 		printf("%s",readBuff+1);	
 		}
+	close(sockfd);
+///// Ballot generation
+	printf("Enter candidate number you want to vote: ");
+	scanf("%u",&cand_choice);
+	while(1)
+		{	
+		RN=randomn();
+		printf("Random generated: %llX\n",RN);
+		printf("Choose another random? (y/n): ");
+		scanf(" %c",&x);
+		x=tolower(x);
+		if(x!='y')
+			break;
+		}
+//// ballot generation and signing
+	FILE *counter_key=fopen("counter_key","wb");
+	conv(PKdist);
+	sscanf(PKdist,"%s %d",ip_t,&port_t);
+	serv_addr.sin_port = htons(port_t);
+	serv_addr.sin_addr.s_addr = inet_addr(ip_t);	
+	
+	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
+	
+	write(sockfd,&counterID,4);
+	if(read(sockfd,readBuff,17)==17 && readBuff[0]==0)
+		{
+		fwrite(readBuff+1,16,1,counter_key);
+		}
+	else
+		{
+		printf("fatal error!\n");
+		return 2;	
+		}
+	fclose(counter_key);
+	FILE *tmp=fopen("ballot_0","wb");
+	fwrite(&cand_choice,4,1,tmp);
+	fwrite(&RN,8,1,tmp);
+	fclose(tmp);
+	encrypt("ballot_0","counter_key","ballot_1");
+	
+	
+	tmp=fopen("ballot_1","ab");
+
+	fwrite(&voterID,4,1,tmp);
+	time_t now=time(NULL);
+	fwrite(&now,8,1,tmp);
+	
+	fclose(tmp);
+	certify("ballot_1","pri_key","ballot");
+	
+	close(sockfd);
+///// send to authanticator and receive the receipt 
+	conv(auth);
+	sscanf(auth,"%s %d",ip_t,&port_t);
+	serv_addr.sin_port = htons(port_t);
+	serv_addr.sin_addr.s_addr = inet_addr(ip_t);	
+	
+	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr));	
+	
+	FILE *ballot=fopen("ballot","rb");
+	if(fread(sendBuff,52,1,ballot)!=52)
+		{
+		printf("fatal error!\n ballot is currupted\n");
+		return 3;
+		}
+	write(sockfd,sendBuff,52);
+	if(read(sockfd,readBuff,68)!=68)
+		{
+		printf("fatal error!\n receipt is currupted\n");
+		return 4;
+		}
+	FILE *rec=fopen("receipt","wb");
+	fwrite(readBuff,68,1,rec);
+	fclose(rec);
 	return 0;
 	}

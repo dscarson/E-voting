@@ -262,7 +262,6 @@ void certify(char *in_file,char *key_file,char *out_file)
 		{
 		fwrite(buff,1,1,out);	
 		}
-	
 	fclose(out);
 	remove("hash");
 	remove("ehash");
