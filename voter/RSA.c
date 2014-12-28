@@ -7,7 +7,6 @@
 int prime[1000001]={0};
 int plist[1000000];
 int pcnt=0;
-typedef unsigned long long ull;
 
 long long big_mult(long long a,long long b,long long mod)
 	{
@@ -137,7 +136,7 @@ void keygen()
 	fwrite(&d,sizeof(d),1,pub);
 	fwrite(&n,sizeof(n),1,pub);
 	
-	printf("%llu %llu %llu %llu\n",e,d,phi,n);
+//	printf("%llu %llu %llu %llu\n",e,d,phi,n);
 //	printf("%llu %llu\n",d,n);
 	fclose(pri);
 	fclose(pub);
@@ -312,7 +311,7 @@ bool verify(char *in_file,char *key_file)
 	remove("hash2");
 	return flag;
 	}
-
+/*
 int main()
 {
 keygen();
@@ -322,3 +321,4 @@ certify("manav.txt","pri_key","certi");
 printf("status %d\n",verify("certi","pub_key"));
 return 0;
 }
+*/
