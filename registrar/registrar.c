@@ -75,7 +75,7 @@ int main(int argc,char **argv)
 				{
 				printf("Invalid voter registration request!\n");
 				sendBuff[0]=3;
-				write(connfd,sendBuff,1+sprintf(sendBuff+1,"Invalid voter registration reqeust!"));
+				write(connfd,sendBuff,1+sprintf(sendBuff+1,"Invalid voter registration reqeust!\0"));
 				}
 			else
 				{
@@ -83,20 +83,22 @@ int main(int argc,char **argv)
 					{
 					printf("Voter already registered!\n");
 					sendBuff[0]=4;
-					write(connfd,sendBuff,1+sprintf(sendBuff+1,"Voter already registered!"));
+					write(connfd,sendBuff,1+sprintf(sendBuff+1,"Voter already registered!\0"));
 					}
 				else
 					{
 					sendBuff[0]=0;
 					memcpy(sendBuff+1,&candidate_no,4);
-					memcpy(sendBuff+5,&invalid,4);
+					
 					fwrite(&candidate_no,4,1,voter_list);
 					fwrite(readBuff,1,64,voter_list);
 					fflush(voter_list);
 					sprintf(filename,"keys/%08X_pub",candidate_no);
 					key=fopen(filename,"wb");
 					fwrite(readBuff+64,16,1,key);
-					write(connfd,sendBuff,9);
+					fwrite(readBuff+64,16,1,stdout);
+					fclose(key);					
+					write(connfd,sendBuff,5);
 					printf("%08X added!\n",candidate_no);
 					candidate_no++;
 					}
@@ -105,7 +107,7 @@ int main(int argc,char **argv)
 		else if(readBuff[0]==1)
 			{
 			printf("Candidate list returned\n");
-			sendBuff[1]=1;
+			sendBuff[0]=1;
 			strcpy(sendBuff+1, info);
 			write(connfd,sendBuff,info_size+1);
 			}
@@ -113,7 +115,7 @@ int main(int argc,char **argv)
 			{
 			printf("Invalid request!");	
 			sendBuff[0]=2;
-			write(connfd,sendBuff,1+sprintf(sendBuff+1,"Invalid reqeust!"));
+			write(connfd,sendBuff,1+sprintf(sendBuff+1,"Invalid reqeust!\0"));
 			}
 		close(connfd);
 		sleep(1);
