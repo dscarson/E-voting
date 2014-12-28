@@ -25,13 +25,15 @@ int main()
 	char auth[30];
 	char counter[30];
 	char ip_t[30];
+	int port_t;
+	
 	char _pub[16];
 	char name[33]={0};
 	char email[33]={0};
 	unsigned int voterID;
 	unsigned int authID=0;
 	unsigned int counterID=0xffffffff;
-	int port_t;
+	
 	char x;
 	unsigned int cand_choice;
 	unsigned long long RN;
