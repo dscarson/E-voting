@@ -118,7 +118,7 @@ int main()
 			break;
 		}
 //// ballot generation and signing
-	FILE *counter_key=fopen("counter_key","wb");
+	FILE *counter_key=fopen("FFFFFFFF_pub","wb");
 	conv(PKdist);
 	sscanf(PKdist,"%s %d",ip_t,&port_t);
 	serv_addr.sin_port = htons(port_t);
@@ -142,7 +142,7 @@ int main()
 	fwrite(&cand_choice,4,1,tmp);
 	fwrite(&RN,8,1,tmp);
 	fclose(tmp);
-	encrypt("ballot_0","counter_key","ballot_1");
+	encrypt("ballot_0","FFFFFFFF_pub","ballot_1");
 	
 	
 	tmp=fopen("ballot_1","ab");
