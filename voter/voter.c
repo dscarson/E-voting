@@ -179,5 +179,6 @@ int main()
 	FILE *rec=fopen("receipt","wb");
 	fwrite(readBuff+1,68,1,rec);
 	fclose(rec);
+	printf("Receipt received!\n");
 	return 0;
 	}
