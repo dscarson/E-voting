@@ -142,15 +142,12 @@ int main(int argc,char **argv)
 				remove(filename3);
 				remove(filename4);
 				
-<<<<<<< HEAD
+
                 printf("time to send to counter %d\n",sockfd1);
                 fflush(stdout);
                     
 				write(sockfd1,sendBuff,28+16);
-                
-=======
-				write(sockfd1,sendBuff,28+16);
->>>>>>> 748318a9c3c79ebd34f7bd7b7e1d63aac2158584
+
 				printf("Vote sent to counter \n");
 				fflush(stdout);
 											

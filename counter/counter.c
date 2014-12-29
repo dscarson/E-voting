@@ -50,9 +50,14 @@ int main(int argc,char **argv)
 			}
 		memcpy(&SN,readBuff+40,4);
 		sprintf(filename,"votes/%08X_vote",SN);
+		printf("opening file\n");
+
 		vote=fopen(filename,"wb");
 		fwrite(readBuff,44,1,vote);
 		fclose(vote);
+
+		printf("file closed\n");
+		fflush(stdout);
 		if(verify(filename,"FFFFFFFF_pub")==false)
 			{
 			printf("Voter Forged!\n");
@@ -71,6 +76,9 @@ int main(int argc,char **argv)
 		write(connfd,sendBuff,21);
 		remove("temp");
 		remove("temp1");
+
+		printf("vote received\n");
+		fflush(stdout);
 		}
 	close(connfd);
 	return 0;
