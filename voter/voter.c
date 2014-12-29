@@ -165,19 +165,19 @@ int main()
 	connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr));	
 	
 	FILE *ballot=fopen("ballot","rb");
-	if(fread(sendBuff,52,1,ballot)!=52)
+	if(fread(sendBuff,52,1,ballot)!=1)
 		{
 		printf("fatal error!\n ballot is currupted\n");
 		return 3;
 		}
 	write(sockfd,sendBuff,52);
-	if(read(sockfd,readBuff,68)!=68)
+	if(read(sockfd,readBuff,69)!=69)
 		{
 		printf("fatal error!\n receipt is currupted\n");
 		return 4;
 		}
 	FILE *rec=fopen("receipt","wb");
-	fwrite(readBuff,68,1,rec);
+	fwrite(readBuff+1,68,1,rec);
 	fclose(rec);
 	return 0;
 	}
