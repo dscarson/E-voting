@@ -49,13 +49,14 @@ int main(int argc,char **argv)
 			continue;	
 			}
 		memcpy(&SN,readBuff+40,4);
-		sprintf(filename,"%08X_vote",SN);
+		sprintf(filename,"votes/%08X_vote",SN);
 		vote=fopen(filename,"wb");
 		fwrite(readBuff,44,1,vote);
 		fclose(vote);
-		if(!verify(filename,"FFFFFFFF_pub"))
+		if(verify(filename,"FFFFFFFF_pub")==false)
 			{
 			printf("Voter Forged!\n");
+			remove(filename);
 			sendBuff[0]=2;
 			write(connfd, sendBuff,1);
 			continue;
