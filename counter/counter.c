@@ -18,7 +18,13 @@ int main(int argc,char **argv)
 	int n;
 	unsigned int SN;
 	FILE *vote;
+	FILE *count;
 	char filename[1024];
+	char filename1[1024];
+	char filename2[1024];
+	unsigned int voted;
+	unsigned long long RN;
+
 	listenfd = socket(AF_INET, SOCK_STREAM, 0);
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_addr.s_addr = htonl(INADDR_ANY); 
@@ -58,7 +64,7 @@ int main(int argc,char **argv)
 
 		printf("file closed\n");
 		fflush(stdout);
-		if(verify(filename,"FFFFFFFF_pub")==false)
+		if(verify(filename,"00000000_pub")==false)
 			{
 			printf("Voter Forged!\n");
 			remove(filename);
@@ -66,6 +72,7 @@ int main(int argc,char **argv)
 			write(connfd, sendBuff,1);
 			continue;
 			}
+
 		sendBuff[0]=0;
 		vote=fopen("temp","wb");
 		fwrite(&SN,4,1,vote);
@@ -79,6 +86,25 @@ int main(int argc,char **argv)
 
 		printf("vote received\n");
 		fflush(stdout);
+
+		sprintf(filename1,"%08X_temp",SN);
+		sprintf(filename2,"%08X_temp1",SN);
+
+		count=fopen(filename1,"wb");
+		fwrite(readBuff+16,24,1,count);
+		fclose(count);
+
+		decrypt(filename1,"pri_key",filename2);
+
+		count = fopen(filename2,"rb");
+		fread(&voted,4,1,count);
+		fread(&RN,8,1,count);
+		fclose(count);
+
+		printf("%u %llX\n",voted,RN);
+		fflush(stdout);
+
+
 		}
 	close(connfd);
 	return 0;

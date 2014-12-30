@@ -142,7 +142,7 @@ int main()
 	fwrite(&cand_choice,4,1,tmp);
 	fwrite(&RN,8,1,tmp);
 	fclose(tmp);
-	encrypt("ballot_0","FFFFFFFF_pub","ballot_1");
+	encrypt1("ballot_0","FFFFFFFF_pub","ballot_1");
 	
 	
 	tmp=fopen("ballot_1","ab");
