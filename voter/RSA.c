@@ -195,7 +195,7 @@ void decrypt(char *in_file,char *key_file,char *out_file)
 	fclose(out);
 	}
 
-void encrypt(char *in_file,char *key_file,char *out_file)
+void encrypt1(char *in_file,char *key_file,char *out_file)
 	{
 	FILE *in=fopen(in_file,"rb");
 	FILE *_key=fopen(key_file,"rb");
@@ -249,7 +249,7 @@ void certify(char *in_file,char *key_file,char *out_file)
 	char buff[16];
 
 	hash(in_file,"hash");
-	encrypt("hash",key_file,"ehash");
+	encrypt1("hash",key_file,"ehash");
 	
 	FILE* out=fopen(out_file,"wb");
 	FILE* thash=fopen("ehash","rb");

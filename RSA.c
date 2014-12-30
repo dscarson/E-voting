@@ -311,8 +311,10 @@ bool verify(char *in_file,char *key_file)
 	return flag;
 	}
 /*
+
 int main()
 {
+    srand(245);
 keygen();
 //encrypt("manav.txt","pub_key","c.txt");
 //decrypt("c.txt","pri_key","d.txt");
