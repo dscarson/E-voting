@@ -186,5 +186,8 @@ int main()
 	fwrite(readBuff+1,68,1,rec);
 	fclose(rec);
 	printf("Receipt received!\n");
+	remove("ballot");
+	remove("ballot_0");
+	remove("ballot_1");
 	return 0;
 	}
