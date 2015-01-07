@@ -41,6 +41,24 @@ int main(int argc,char **argv)
 		printf("Failed to listen\n");
 		return -1;
 		}
+
+
+	DIR *res=opendir("result");
+	struct dirent *rec;
+	
+	while((rec=readdir(res)))
+		{
+		if(rec->d_name[0] =='.' )
+			{
+			continue;
+			}	
+
+		sprintf(filename4,"result/%s",rec->d_name);
+		remove(filename4);
+		}
+
+	res=opendir("result");
+
 	printf("Counter is up and running!\n");
 	connfd = accept(listenfd, (struct sockaddr*)NULL ,NULL); 
 	while(1)
@@ -112,12 +130,15 @@ int main(int argc,char **argv)
 		fprintf(cand,"%016llX\n",RN);
 		fclose(cand);
 		}
-	DIR *res=opendir("result");
-	struct dirent *rec;
 	
 	while((rec=readdir(res)))
 		{
-		sprintf(filename4,"%s",rec->d_name);
+		if(rec->d_name[0] =='.' )
+			{
+			continue;
+			}	
+
+		sprintf(filename4,"result/%s",rec->d_name);
 		cand=fopen(filename4,"rb");
 		fseek(cand,0,SEEK_END);
 		printf("%sth candidate got %ld votes\n",rec->d_name,ftell(cand)/17);
