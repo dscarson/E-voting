@@ -90,10 +90,13 @@ int main(int argc,char **argv)
 		sprintf(filename,"votes/%08X_vote",voterID);
 		
 		//cheking for duplicate votes
-		ip=fopen("filename","r");
+		ip=fopen(filename,"rb");
+		
 		if(ip!=0)
 			{
+			sendBuff[0]=11;
 			printf("Already voted\n");
+			write(connfd,sendBuff,1);
 			continue;	
 			}
 		fclose(ip);
@@ -127,7 +130,8 @@ int main(int argc,char **argv)
 				{
 				printf("Forged vote!\n");
 				sendBuff[0]=1;
-				write(connfd,sendBuff,69);
+				remove(filename);
+				write(connfd,sendBuff,1);
 				continue;	
 				}
 			remove(filename1);
