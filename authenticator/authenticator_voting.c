@@ -93,15 +93,16 @@ int main(int argc,char **argv)
 		
 		//cheking for duplicate votes
 		ip=fopen(filename,"rb");
-		
+
 		if(ip!=0)
 			{
 			sendBuff[0]=11;
 			printf("Already voted\n");
+			fflush(stdout);
 			write(connfd,sendBuff,1);
+			fclose(ip);
 			continue;	
 			}
-		fclose(ip);
 		
 		vote=fopen(filename,"wb");
 		fwrite(readBuff,52,1,vote);
