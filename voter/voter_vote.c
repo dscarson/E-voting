@@ -172,8 +172,13 @@ int main()
 			printf("You are caught in Forgery!\n");
 			return 5;
 			}
+		if(readBuff[0]==22)
+			{
+			printf("You are not Registered!\n");
+			return 6;	
+			}
 		printf("fatal error!\n receipt is currupted\n");
-		return 6;
+		return 10;
 		}
 //	printf("n=%d\n",n);
 	FILE *rec=fopen("receipt","wb");
