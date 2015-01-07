@@ -183,19 +183,19 @@ void decrypt(char *in_file,char *key_file,char *out_file)
 	unsigned int r;
 	fread(&key,sizeof(key),1,_key);	
 	fread(&n,sizeof(n),1,_key);
-	printf("%llu %llu\n",key,n);
+//	printf("%llu %llu\n",key,n);
 	while(fread(&enc_chunk,8,1,in))
 		{
-		printf("%llu\n",enc_chunk);
+//		printf("%llu\n",enc_chunk);
 		chunk=modpow(enc_chunk,key,n);
-		printf("%llu\n",chunk);
+//		printf("%llu\n",chunk);
 		r=chunk;
 		fwrite(&r,sizeof(r),1,out);
 		}
 	fclose(out);
 	}
 
-void encrypt(char *in_file,char *key_file,char *out_file)
+void encrypt1(char *in_file,char *key_file,char *out_file)
 	{
 	FILE *in=fopen(in_file,"rb");
 	FILE *_key=fopen(key_file,"rb");
@@ -209,7 +209,7 @@ void encrypt(char *in_file,char *key_file,char *out_file)
 	int i=0;
 	fread(&key,sizeof(key),1,_key);	
 	fread(&n,sizeof(n),1,_key);
-	printf("-%llu %llu\n",key,n);
+//	printf("-%llu %llu\n",key,n);
 	while(fread(&x,1,1,in))
 		{
 		if(i==0)
@@ -228,9 +228,9 @@ void encrypt(char *in_file,char *key_file,char *out_file)
 			rchunk<<=8;
 			rchunk|=(chunk&0xFF000000)>>24;
 			
-			printf("-%llu\n",rchunk);
+//			printf("-%llu\n",rchunk);
 			enc_chunk=modpow(rchunk,key,n);
-			printf("-%llu\n",enc_chunk);
+//			printf("-%llu\n",enc_chunk);
 			fwrite(&enc_chunk,sizeof(enc_chunk),1,out);
 			}
 		i++;
@@ -249,7 +249,7 @@ void certify(char *in_file,char *key_file,char *out_file)
 	char buff[16];
 
 	hash(in_file,"hash");
-	encrypt("hash",key_file,"ehash");
+	encrypt1("hash",key_file,"ehash");
 	
 	FILE* out=fopen(out_file,"wb");
 	FILE* thash=fopen("ehash","rb");
@@ -311,15 +311,13 @@ bool verify(char *in_file,char *key_file)
 	return flag;
 	}
 /*
-
 int main()
 {
-    srand(245);
 keygen();
 //encrypt("manav.txt","pub_key","c.txt");
 //decrypt("c.txt","pri_key","d.txt");
-//certify("manav.txt","pri_key","certi");
-//printf("status %d\n",verify("certi","pub_key"));
+certify("manav.txt","pri_key","certi");
+printf("status %d\n",verify("certi","pub_key"));
 return 0;
 }
 */
