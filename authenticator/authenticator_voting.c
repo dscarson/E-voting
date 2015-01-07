@@ -41,6 +41,7 @@ int main(int argc,char **argv)
 
 	
 	FILE *ip=fopen("ip.config","r");
+	FILE *vote_list=("votes/votes_list","ab");
 	FILE *vote,*key,*rec,*vote_;
 	FILE *rec_;
 	fgets(registrar,30,ip);
@@ -48,6 +49,7 @@ int main(int argc,char **argv)
 	fgets(auth,30,ip);
 	fgets(counter,30,ip);
 	fclose(ip);
+	
 	
 	
 	unsigned int SN=0;
@@ -120,6 +122,7 @@ int main(int argc,char **argv)
 				sendBuff[0]=0;
 				sprintf(filename2,"%08X_rec",voterID);
 				certify(filename,"pri_key",filename2);
+				fwrite(&voterID,4,1,vote_list);
 				rec=fopen(filename2,"rb");
 				fread(sendBuff+1,68,1,rec);
 				write(connfd,sendBuff,69);

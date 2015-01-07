@@ -162,10 +162,20 @@ int main()
 	write(sockfd,sendBuff,52);
 	if((n=read(sockfd,readBuff,69))!=69)
 		{
+		if(readBuff[0]==11)
+			{
+			printf("You have already voted!\n");
+			return 4;	
+			}
+		if(readBuff[0]==1)
+			{
+			printf("You are caught in Forgery!\n");
+			return 5;
+			}
 		printf("fatal error!\n receipt is currupted\n");
-		return 4;
+		return 6;
 		}
-	printf("n=%d\n",n);
+//	printf("n=%d\n",n);
 	FILE *rec=fopen("receipt","wb");
 	fwrite(readBuff+1,68,1,rec);
 	fclose(rec);
