@@ -39,7 +39,7 @@ int main(int argc,char **argv)
       connfd = accept(listenfd, (struct sockaddr*)NULL ,NULL); // accept awaiting request 
 		
 		pid_t child = fork();
-	if(child==0)
+	if(child!=0)
 		continue;
 	
 		printf("Reading");
