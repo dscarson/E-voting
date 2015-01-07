@@ -56,7 +56,7 @@ int main(int argc,char **argv)
 	fgets(counter,30,ip);
 	fclose(ip);
 	
-	
+	int i,j;
 	unsigned int SN=0;
 	unsigned int voterID;
 	
@@ -80,7 +80,7 @@ int main(int argc,char **argv)
 	printf("Authenticator is sending votes to counter!\n");
 	fflush(stdout);
 
-	FILE *vote_list=fopen("votes/vote_list","rb");
+	FILE *vote_list=fopen("votes/votes_list","rb");
 	FILE *map=fopen("vote_permute","wb");
 	int vote_count=0;
 
@@ -92,7 +92,7 @@ int main(int argc,char **argv)
 		shuffler[i]=i;
 	
 	srand(time(0));
-	int i,j;
+	
 	for(i=0;i<vote_count;i++)
 		{
 		j=rand()%(i+1);
@@ -109,8 +109,9 @@ int main(int argc,char **argv)
 //	fseek(vote_list,offset,SEEK_SET);
 	for(SN=0;SN<vote_count;)
 		{
-		fseek(vote_list,sizeof(int)*shuffler[SN],SEEK_CUR);
+		fseek(vote_list,sizeof(int)*shuffler[SN],SEEK_SET);
 		fread(&voterID,4,1,vote_list);
+		printf("%08X vote passed\n",voterID);
 		sprintf(filename,"votes/%08X_vote",voterID);
 		vote=fopen(filename,"rb");
 		fread(readBuff,52,1,vote);
