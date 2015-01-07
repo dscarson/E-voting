@@ -183,12 +183,12 @@ void decrypt(char *in_file,char *key_file,char *out_file)
 	unsigned int r;
 	fread(&key,sizeof(key),1,_key);	
 	fread(&n,sizeof(n),1,_key);
-	printf("%llu %llu\n",key,n);
+//	printf("%llu %llu\n",key,n);
 	while(fread(&enc_chunk,8,1,in))
 		{
-		printf("%llu\n",enc_chunk);
+//		printf("%llu\n",enc_chunk);
 		chunk=modpow(enc_chunk,key,n);
-		printf("%llu\n",chunk);
+//		printf("%llu\n",chunk);
 		r=chunk;
 		fwrite(&r,sizeof(r),1,out);
 		}
@@ -209,7 +209,7 @@ void encrypt1(char *in_file,char *key_file,char *out_file)
 	int i=0;
 	fread(&key,sizeof(key),1,_key);	
 	fread(&n,sizeof(n),1,_key);
-	printf("-%llu %llu\n",key,n);
+//	printf("-%llu %llu\n",key,n);
 	while(fread(&x,1,1,in))
 		{
 		if(i==0)
@@ -228,9 +228,9 @@ void encrypt1(char *in_file,char *key_file,char *out_file)
 			rchunk<<=8;
 			rchunk|=(chunk&0xFF000000)>>24;
 			
-			printf("-%llu\n",rchunk);
+//			printf("-%llu\n",rchunk);
 			enc_chunk=modpow(rchunk,key,n);
-			printf("-%llu\n",enc_chunk);
+//			printf("-%llu\n",enc_chunk);
 			fwrite(&enc_chunk,sizeof(enc_chunk),1,out);
 			}
 		i++;

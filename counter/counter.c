@@ -122,7 +122,10 @@ int main(int argc,char **argv)
 		fread(&voted,4,1,count);
 		fread(&RN,8,1,count);
 		fclose(count);
-
+		
+		remove(filename1);
+		remove(filename2);
+		
 		printf("%llX random voted for %dth candidate\n",RN,voted);
 		fflush(stdout);
 		sprintf(filename3,"result/%d",voted);
