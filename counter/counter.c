@@ -7,6 +7,7 @@
 #include <errno.h>
 #include <string.h>
 #include <sys/types.h>
+#include <dirent.h>
 #include "RSA.c"
  
 int main(int argc,char **argv)
@@ -19,9 +20,12 @@ int main(int argc,char **argv)
 	unsigned int SN;
 	FILE *vote;
 	FILE *count;
+	FILE *cand;
 	char filename[1024];
 	char filename1[1024];
 	char filename2[1024];
+	char filename3[1024];
+	char filename4[1024];
 	unsigned int voted;
 	unsigned long long RN;
 
@@ -44,8 +48,8 @@ int main(int argc,char **argv)
 		n=read(connfd,readBuff,44);
 		if(n==0)
 			{
-			printf("Can't read from authenticator\n");
-			break;	
+			printf("Counting Done\n");
+			break;
 			}
 		else if(n!=44)
 			{
@@ -101,10 +105,22 @@ int main(int argc,char **argv)
 		fread(&RN,8,1,count);
 		fclose(count);
 
-		printf("%u %llX\n",voted,RN);
+		printf("%llX random voted for %dth candidate\n",RN,voted);
 		fflush(stdout);
-
-
+		sprintf(filename3,"result/%d",voted);
+		cand=fopen(filename3,"ab");
+		fprintf(cand,"%016llX\n",RN);
+		fclose(cand);
+		}
+	DIR *res=opendir("result");
+	struct dirent *rec;
+	
+	while((rec=readdir(res)))
+		{
+		sprintf(filename4,"%s",rec->d_name);
+		cand=fopen(filename4,"rb");
+		fseek(cand,0,SEEK_END);
+		printf("%sth candidate got %ld votes\n",rec->d_name,ftell(cand)/17);
 		}
 	close(connfd);
 	return 0;

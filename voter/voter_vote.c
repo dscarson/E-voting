@@ -21,6 +21,7 @@ int main()
 	struct sockaddr_in serv_addr;
 	FILE *ip=fopen("ip.config","r");
 	
+	srand(time(0));
 	char PKdist[30];
 	char registrar[30];
 	char auth[30];
